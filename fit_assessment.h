@@ -3,6 +3,8 @@
 
 #include "type_definitions.h"
 
-double standard_error_regression(lin_coefficients coefficients, record_t *recordP, long int numOfEntries);
+double standard_error(lin_coefficients coefficients, record_t *recordP, long int numOfEntries, int mode);
+double r_squared(lin_coefficients coefficients, record_t *recordP, long int numOfEntries, int mode);
+double sse(lin_coefficients coefficients, record_t *recordP, long int numOfEntries, int mode);
 
 #endif

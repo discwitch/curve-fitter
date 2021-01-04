@@ -12,7 +12,7 @@ long int findSize(void)
   }
 
   while (EOF != (fscanf(fp, "%*[^\n]"), fscanf(fp,"%*c")))
-        ++lines;
+        lines++;
   
   fclose(fp);
 
@@ -33,7 +33,7 @@ long int readCSV(record_t* recordsP, header_t* headerP) {
         count++;
     }}
 
-    while (fscanf(fp, " %lf;%lf", &recordsP[count].xAxis, &recordsP[count].yAxis) == 2) {
+    while (EOF != (fscanf(fp, "%*[^\n]"), fscanf(fp, "%lf;%lf", &recordsP[count-1].X, &recordsP[count-1].Y))) {
         count++;
     }
 

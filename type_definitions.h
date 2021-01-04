@@ -2,8 +2,8 @@
 #define TYPE_DEFINITIONS
 
 typedef struct {
-    double xAxis;
-    double yAxis;
+    double X;
+    double Y;
 } record_t;
 
 typedef struct {
