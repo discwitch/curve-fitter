@@ -43,3 +43,8 @@ double exponential(double x, double k, double A) {
     double y = A * exp(k * x);
     return y;
 }
+
+double logarithmic(double x, double k, double A) {
+    double y = k * log(x) + A;
+    return y;
+}

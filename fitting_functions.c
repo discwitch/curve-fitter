@@ -29,6 +29,19 @@ lin_coefficients exponentialRegression(record_t *recordP, long int numOfEntries)
     return expCoefficients;
 }
 
+lin_coefficients logarithmicRegression(record_t *recordP, long int numOfEntries) {
+    record_t convertToLinear[numOfEntries];
+
+    for (int i = 0; i < numOfEntries; i ++) {
+        convertToLinear[i].X = log(recordP[i].X);
+        convertToLinear[i].Y = recordP[i].Y;
+    }
+
+    lin_coefficients logCoefficients = linearRegression(convertToLinear, numOfEntries);
+    return logCoefficients;
+}
+
+
 lin_coefficients doubleExponentialRegression(record_t *recordP, long int numOfEntries) {
     record_t convertToLinear[numOfEntries];
 

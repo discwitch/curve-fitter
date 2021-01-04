@@ -14,6 +14,9 @@ double standard_error(lin_coefficients coefficients, record_t *recordP, long int
             case 1:
                 diff[i].X = exponential(recordP[i].X, coefficients.k, coefficients.d);
                 break;
+            case 2:
+                diff[i].X = logarithmic(recordP[i].X, coefficients.k, coefficients.d);
+                break;
         }
         diff[i].Y = recordP[i].Y - diff[i].X;
     }
@@ -36,6 +39,9 @@ double r_squared(lin_coefficients coefficients, record_t *recordP, long int numO
                 break;
             case 1:
                 Y_modelY[i].Y = exponential(recordP[i].X, coefficients.k, coefficients.d);
+                break;
+            case 2:
+                Y_modelY[i].Y = logarithmic(recordP[i].X, coefficients.k, coefficients.d);
                 break;
         }
     }
@@ -68,6 +74,9 @@ double sse(lin_coefficients coefficients, record_t *recordP, long int numOfEntri
                 break;
             case 1:
                 diff_modelY[i].Y = exponential(recordP[i].X, coefficients.k, coefficients.d);
+                break;
+            case 2:
+                diff_modelY[i].Y = logarithmic(recordP[i].X, coefficients.k, coefficients.d);
                 break;
         }
         diff_modelY[i].X = recordP[i].Y - diff_modelY[i].Y;

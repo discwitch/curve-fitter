@@ -37,12 +37,22 @@ int main(void)
     lin_coefficients expCoefficients = exponentialRegression(records, numOfEntries);
     double exp_score = standard_error(expCoefficients, records, numOfEntries, 1);
     double exp_r2_score = r_squared(expCoefficients, records, numOfEntries, 1);
-    double sse_exp_score = sse(expCoefficients, records, numOfEntries, 0);
+    double sse_exp_score = sse(expCoefficients, records, numOfEntries, 1);
 
     printf("Exponential Coefficients: A = %lf, k = %lf\n", expCoefficients.d, expCoefficients.k);
     printf("Regression Standard Error: %lf\n", exp_score);
     printf("SSE: %lf\n", sse_exp_score);
-    printf("Regression R2: %lf\n", exp_r2_score);   
+    printf("Regression R2: %lf\n", exp_r2_score);
+
+    lin_coefficients logCoefficients = logarithmicRegression(records, numOfEntries);
+    double log_score = standard_error(logCoefficients, records, numOfEntries, 2);
+    double log_r2_score = r_squared(logCoefficients, records, numOfEntries, 2);
+    double log_exp_score = sse(logCoefficients, records, numOfEntries, 2);
+
+    printf("Logarithmic Coefficients: d = %lf, k = %lf\n", logCoefficients.d, logCoefficients.k);
+    printf("Regression Standard Error: %lf\n", log_score);
+    printf("SSE: %lf\n", log_exp_score);
+    printf("Regression R2: %lf\n", log_r2_score);   
     
     return 0;
 }
