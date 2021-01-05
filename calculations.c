@@ -44,7 +44,25 @@ double exponential(double x, double k, double A) {
     return y;
 }
 
-double logarithmic(double x, double k, double A) {
-    double y = k * log(x) + A;
+double logarithmic(double x, double k, double d) {
+    double y = k * log(x) + d;
+    return y;
+}
+
+double polynomial(double x, double *coefficients, long int degree) {
+    record_t terms[degree + 1];
+    terms[0].X = 1;
+    terms[0].Y = coefficients[0];
+
+    for (int i = 1; i <= degree; i++) {
+        terms[i].X = terms[i-1].X * x;
+        terms[i].Y = coefficients[i];
+    }
+
+    double y = 0;
+    for (int j = 0; j <= degree; j++ ) {
+        y = y + terms[j].X * terms[j].Y;
+    }
+
     return y;
 }

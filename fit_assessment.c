@@ -50,13 +50,13 @@ double r_squared(lin_coefficients coefficients, record_t *recordP, long int numO
     double meanY = sums_Y_modelY.X / numOfEntries;
     double mean_modelY = sums_Y_modelY.Y / numOfEntries;
 
-    record_t residuums[numOfEntries];
+    record_t residuals[numOfEntries];
     for (int i = 0; i < numOfEntries; i ++) {
-        residuums[i].X = Y_modelY[i].X - meanY;
-        residuums[i].Y = Y_modelY[i].Y - mean_modelY;
+        residuals[i].X = Y_modelY[i].X - meanY;
+        residuals[i].Y = Y_modelY[i].Y - mean_modelY;
     }
 
-    record_t SQT_SQE = powerSumXY(residuums, numOfEntries);
+    record_t SQT_SQE = powerSumXY(residuals, numOfEntries);
 
     double r_squared = SQT_SQE.Y / SQT_SQE.X;
 
@@ -85,4 +85,9 @@ double sse(lin_coefficients coefficients, record_t *recordP, long int numOfEntri
     record_t powerSums_diff_modelY = powerSumXY(diff_modelY, numOfEntries);
 
     return powerSums_diff_modelY.X;
+}
+
+double mse(lin_coefficients coefficients, record_t *recordP, long int numOfEntries, int mode) {
+    double sum_squared_errors = sse(coefficients, recordP, numOfEntries, mode);
+    return sum_squared_errors / numOfEntries;
 }

@@ -9,5 +9,6 @@ double sumProductXY(record_t *recordP, long int numOfEntries);
 double linear(double x, double k, double d);
 double exponential(double x, double k, double A);
 double logarithmic(double x, double k, double A);
+double polynomial(double x, double *coefficients, long int degree);
 
 #endif
