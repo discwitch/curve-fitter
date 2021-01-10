@@ -12,6 +12,11 @@
 
 int main(void)
 {   
+    const int n = 3;
+    double matrix[12] = {1,1,1,9,2,-3,4,13,3,4,5,40};
+    gaussian_elimination(n, matrix);
+
+    
     long int size = findSize();
 
     record_t records[size];
@@ -61,7 +66,7 @@ int main(void)
     printf("Regression Standard Error: %lf\n", log_score);
     printf("SSE: %lf\n", sse_log_score);
     printf("MSE: %lf\n", mse_log_score);
-    printf("Regression R2: %lf\n", log_r2_score);   
+    printf("Regression R2: %lf\n", log_r2_score);
     
     return 0;
 }
