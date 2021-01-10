@@ -69,7 +69,48 @@ double polynomial(double x, double *coefficients, long int degree) {
     return y;
 }
 
-void gaussian_elimination(int n, double *matrix, double *coefficientsP)
+double power(double x, int exponent) {
+    double y = 1;
+    if (exponent == 0) return y;
+
+    for(int i = 0; i < exponent; i++ ) {
+        y = y * x;
+    }
+    return y;
+}
+
+void create_extended_matrix(double *array, double *matrix_entries, double *extended_Y, int n) {
+    int i, j;
+
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n+1; j++) {
+            int index = i*(n+1) + j;
+            if (index % n == 0) {
+                *(array + index) = extended_Y[i];
+            } else {
+                *(array + index) = matrix_entries[i+j];
+            }
+        }
+    }
+}
+
+void power_arrays(record_t *recordP, int record_size, double *matrix_entries, double *extended_Y, int n) {
+    for (int i = 0; i < 2*n; i ++ ) {
+        double sum = 0;
+        double sum_Y = 0;
+        for (int j = 0; j < record_size; j++) {
+            double x_powered = power(recordP[j].X,i);
+            sum = sum + x_powered;
+            sum_Y = sum_Y + x_powered * recordP[j].Y;
+        }
+        *(matrix_entries + i) = sum;
+        if (i < n){
+            *(extended_Y + i) = sum_Y;
+        }
+    }
+}
+
+void gaussian_elimination(int n, double *matrix, double *coefficients)
 {   
     double a[n][n+1], x[n], ratio;
 	int i, j, k;
@@ -114,6 +155,6 @@ void gaussian_elimination(int n, double *matrix, double *coefficientsP)
 	}
 
     for (int c = 0; c < n; c++){
-        *(coefficientsP + c) = x[c];
+        *(coefficients + c) = x[c];
     }
 }

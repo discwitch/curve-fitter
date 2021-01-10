@@ -12,18 +12,6 @@
 
 int main(void)
 {   
-    const int n = 3;
-    double matrix[12] = {1,1,1,9,2,-3,4,13,3,4,5,40};
-    double coefficients[3];
-    gaussian_elimination(n, matrix, coefficients);
-
-    /* Displaying Solution */ 
-	printf("\nSolution:\n");
-	for(int i=0; i<n; i++)
-	{
-	    printf("x[%d] = %0.3lf\n", i, coefficients[i]);
-	}
-    
     long int size = findSize();
 
     record_t records[size];
@@ -74,6 +62,32 @@ int main(void)
     printf("SSE: %lf\n", sse_log_score);
     printf("MSE: %lf\n", mse_log_score);
     printf("Regression R2: %lf\n", log_r2_score);
+
+    printf("----------------------- POLYNOMIAL REGRESSION -----------------------\n");
+
+    // double matrix[12] = {1,1,1,9,2,-3,4,13,3,4,5,40};    const int degree = 2;
+    const int degree = 2;
+    double coefficients[degree + 1];
+    polynomialRegression(records, numOfEntries, coefficients, degree);
+
+    /* Displaying Solution */ 
+	printf("\nSolution:\n");
+	for(int i=0; i<degree+1; i++)
+	{
+	    printf("a[%d] = %0.3lf\n", i, coefficients[i]);
+	}
+
+    printf("----------------------- LINEAR REGRESSION 2 -----------------------\n");
+    const int Degree = 1;
+    double Coefficients[degree + 1];
+    polynomialRegression(records, numOfEntries, Coefficients, Degree);
+
+    /* Displaying Solution */ 
+	printf("\nSolution:\n");
+	for(int i=0; i<Degree+1; i++)
+	{
+	    printf("a[%d] = %0.3lf\n", i, Coefficients[i]);
+	}
     
     return 0;
 }

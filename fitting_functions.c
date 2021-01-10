@@ -41,7 +41,6 @@ lin_coefficients logarithmicRegression(record_t *recordP, long int numOfEntries)
     return logCoefficients;
 }
 
-
 lin_coefficients doubleExponentialRegression(record_t *recordP, long int numOfEntries) {
     record_t convertToLinear[numOfEntries];
 
@@ -52,4 +51,17 @@ lin_coefficients doubleExponentialRegression(record_t *recordP, long int numOfEn
 
     lin_coefficients expCoefficients = linearRegression(convertToLinear, numOfEntries);
     return expCoefficients;
+}
+
+void polynomialRegression(record_t *recordP, long int numOfEntries, double *coefficients, int degree) {
+    int n = degree + 1;
+
+    double matrix_entries[2 * n];
+    double extended_Y[n];
+    double matrix[n*(n+1)];
+
+    power_arrays(recordP, numOfEntries, matrix_entries, extended_Y, n);
+    create_extended_matrix(matrix, matrix_entries, extended_Y, n);
+
+    gaussian_elimination(n, matrix, coefficients);
 }
