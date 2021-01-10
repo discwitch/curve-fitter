@@ -69,54 +69,51 @@ double polynomial(double x, double *coefficients, long int degree) {
     return y;
 }
 
-void gaussian_elimination(int n, double *matrix)
+void gaussian_elimination(int n, double *matrix, double *coefficientsP)
 {   
-    double a[n+1][n+2], x[n+1], ratio;
+    double a[n][n+1], x[n], ratio;
 	int i, j, k;
 
-    for (int l = 1; l <= n; l++){
-        for (int m = 1; m <= n+1; m++) {
-            a[l][m] = matrix[(l-1)*(n + 1) + (m-1)];
-            printf("%lf   ", a[l][m]);
+    /* reading into lxm Matrix */
+    for (int l = 0; l < n; l++){
+        for (int m = 0; m < n+1; m++) {
+            a[l][m] = matrix[l*(n + 1) + m];
         }
-        printf("\n");
     }
-
 	
 	/* Applying Gauss Elimination */
-	for(i=1;i<=n-1;i++)
-	 {
-		  if(a[i][i] == 0.0)
-		  {
-			   printf("Mathematical Error!");
-			   exit(0);
-		  }
-		  for(j=i+1;j<=n;j++)
-		  {
-			   ratio = a[j][i]/a[i][i];
+	for(i=0;i<n-1;i++)
+	{
+		if(a[i][i] == 0.0)
+		{
+			printf("Mathematical Error!");
+			exit(0);
+		}
+		for(j=i+1;j<n;j++)
+		{
+			ratio = a[j][i]/a[i][i];
 			   
-			   for(k=1;k<=n+1;k++)
-			   {
-			  		a[j][k] = a[j][k] - ratio*a[i][k];
-			   }
-		  }
-	 }
-	 /* Obtaining Solution by Back Subsitution */
-	 x[n] = a[n][n+1]/a[n][n];
+			for(k=0;k<n+1;k++)
+			{
+			  	a[j][k] = a[j][k] - ratio*a[i][k];
+			}
+		}
+	}
+
+	/* Obtaining Solution by Back Subsitution */
+	x[n-1] = a[n-1][n]/a[n-1][n-1];
 	
-	 for(i=n-1;i>=1;i--)
-	 {
-		  x[i] = a[i][n+1];
-		  for(j=i+1;j<=n;j++)
-		  {
-		  		x[i] = x[i] - a[i][j]*x[j];
-		  }
-		  x[i] = x[i]/a[i][i];
-	 }
-	 /* Displaying Solution */ 
-	 printf("\nSolution:\n");
-	 for(i=1;i<=n;i++)
-	 {
-	  	printf("x[%d] = %0.3lf\n",i, x[i]);
-	 }
+	for(i=n-2;i>=0;i--)
+	{
+		x[i] = a[i][n];
+		for(j=i+1;j<n;j++)
+		{
+		  	x[i] = x[i] - a[i][j]*x[j];
+		}
+		x[i] = x[i]/a[i][i];
+	}
+
+    for (int c = 0; c < n; c++){
+        *(coefficientsP + c) = x[c];
     }
+}

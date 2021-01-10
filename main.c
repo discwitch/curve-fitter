@@ -14,8 +14,15 @@ int main(void)
 {   
     const int n = 3;
     double matrix[12] = {1,1,1,9,2,-3,4,13,3,4,5,40};
-    gaussian_elimination(n, matrix);
+    double coefficients[3];
+    gaussian_elimination(n, matrix, coefficients);
 
+    /* Displaying Solution */ 
+	printf("\nSolution:\n");
+	for(int i=0; i<n; i++)
+	{
+	    printf("x[%d] = %0.3lf\n", i, coefficients[i]);
+	}
     
     long int size = findSize();
 

@@ -10,6 +10,6 @@ double linear(double x, double k, double d);
 double exponential(double x, double k, double A);
 double logarithmic(double x, double k, double A);
 double polynomial(double x, double *coefficients, long int degree);
-void gaussian_elimination(int n, double *matrix);
+void gaussian_elimination(int n, double *matrix, double *coefficientsP);
 
 #endif
