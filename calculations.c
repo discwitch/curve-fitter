@@ -51,8 +51,9 @@ double logarithmic(double x, double k, double d) {
     return y;
 }
 
-double polynomial(double x, double *coefficients, long int degree) {
+double polynomial(double x, double *coefficients, int degree) {
     record_t terms[degree + 1];
+
     terms[0].X = 1;
     terms[0].Y = coefficients[0];
 
@@ -81,11 +82,11 @@ double power(double x, int exponent) {
 
 void create_extended_matrix(double *array, double *matrix_entries, double *extended_Y, int n) {
     int i, j;
-
-    for (i = 0; i < n; i++) {
+    for (
+        i = 0; i < n; i++) {
         for (j = 0; j < n+1; j++) {
             int index = i*(n+1) + j;
-            if (index % n == 0) {
+            if (j % n == 0 && j != 0) {
                 *(array + index) = extended_Y[i];
             } else {
                 *(array + index) = matrix_entries[i+j];
@@ -95,16 +96,16 @@ void create_extended_matrix(double *array, double *matrix_entries, double *exten
 }
 
 void power_arrays(record_t *recordP, int record_size, double *matrix_entries, double *extended_Y, int n) {
-    for (int i = 0; i < 2*n; i ++ ) {
+    for (int i = 0; i < 2*n + 1; i ++ ) {
         double sum = 0;
         double sum_Y = 0;
         for (int j = 0; j < record_size; j++) {
-            double x_powered = power(recordP[j].X,i);
+            double x_powered = power(recordP[j].X, i);
             sum = sum + x_powered;
             sum_Y = sum_Y + x_powered * recordP[j].Y;
         }
         *(matrix_entries + i) = sum;
-        if (i < n){
+        if (i < n+1) {
             *(extended_Y + i) = sum_Y;
         }
     }

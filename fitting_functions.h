@@ -9,5 +9,6 @@ lin_coefficients exponentialRegression(record_t *recordP, long int numOfEntries)
 lin_coefficients doubleExponentialRegression(record_t *recordP, long int numOfEntries);
 lin_coefficients logarithmicRegression(record_t *recordP, long int numOfEntries);
 void polynomialRegression(record_t *recordP, long int numOfEntries, double *coefficients, int degree);
+int bestPolynomialFit(record_t *recordP, long int numOfEntries, int maxDegree, double alpha);
 
 #endif

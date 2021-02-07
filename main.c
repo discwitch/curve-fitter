@@ -10,19 +10,43 @@
 #include "fit_assessment.h"
 
 
-int main(void)
+int main(int argc, char **argv)
 {   
-    long int size = findSize();
+    long int size = findSize(argv[1]);
 
     record_t records[size];
     header_t header;
 
-    long int numOfEntries = readCSV(records, &header);
+    long int numOfEntries = readCSV(argv[1], records, &header);
 
     /* for (long i = 1; i < numOfEntries; i++) {
         printf("%lf, %lf\n", records[i].X, records[i].Y);
     } */
+    printf("----------------------- POLYNOMIAL REGRESSION -----------------------\n");
+    // double alpha = 0;
+    // int maxDegree = 12;
+    // int degree = bestPolynomialFit(records, numOfEntries, maxDegree, alpha);
+    int degree = 3;
+    double coefficients[degree + 1];
+    polynomialRegression(records, numOfEntries, coefficients, degree);
 
+
+    double poly_score = standard_error_poly(coefficients, records, numOfEntries, degree);
+    double poly_r2_score = r_squared_poly(coefficients, records, numOfEntries, degree);
+    double sse_poly_score = sse_poly(coefficients, records, numOfEntries, degree);
+    double mse_poly_score = mse_poly(coefficients, records, numOfEntries, degree);
+
+    /* Displaying Solution */ 
+	printf("\nSolution: a[0] = %0.3lf", coefficients[0]);
+	for(int i=1; i<degree+1; i++)
+	{
+	    printf(", a[%d] = %0.3lf", i, coefficients[i]);
+	}
+    printf("\n");
+    printf("Regression Standard Error: %lf\n", poly_score);
+    printf("SSE: %lf\n", sse_poly_score);
+    printf("MSE: %lf\n", mse_poly_score);
+    printf("Regression R2: %lf\n", poly_r2_score);
     printf("----------------------- LINEAR REGRESSION:  y = k * x + d -----------------------\n");
     lin_coefficients linCoefficients = linearRegression(records, numOfEntries);
     double score = standard_error(linCoefficients, records, numOfEntries, 0);
@@ -63,31 +87,6 @@ int main(void)
     printf("MSE: %lf\n", mse_log_score);
     printf("Regression R2: %lf\n", log_r2_score);
 
-    printf("----------------------- POLYNOMIAL REGRESSION -----------------------\n");
-
-    // double matrix[12] = {1,1,1,9,2,-3,4,13,3,4,5,40};    const int degree = 2;
-    const int degree = 2;
-    double coefficients[degree + 1];
-    polynomialRegression(records, numOfEntries, coefficients, degree);
-
-    /* Displaying Solution */ 
-	printf("\nSolution:\n");
-	for(int i=0; i<degree+1; i++)
-	{
-	    printf("a[%d] = %0.3lf\n", i, coefficients[i]);
-	}
-
-    printf("----------------------- LINEAR REGRESSION 2 -----------------------\n");
-    const int Degree = 1;
-    double Coefficients[degree + 1];
-    polynomialRegression(records, numOfEntries, Coefficients, Degree);
-
-    /* Displaying Solution */ 
-	printf("\nSolution:\n");
-	for(int i=0; i<Degree+1; i++)
-	{
-	    printf("a[%d] = %0.3lf\n", i, Coefficients[i]);
-	}
     
     return 0;
 }

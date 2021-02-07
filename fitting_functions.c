@@ -1,5 +1,6 @@
 #include "type_definitions.h"
 #include "calculations.h"
+#include "fit_assessment.h"
 #include <math.h>
 
 lin_coefficients linearRegression(record_t *recordP, long int numOfEntries) {
@@ -54,14 +55,31 @@ lin_coefficients doubleExponentialRegression(record_t *recordP, long int numOfEn
 }
 
 void polynomialRegression(record_t *recordP, long int numOfEntries, double *coefficients, int degree) {
-    int n = degree + 1;
 
-    double matrix_entries[2 * n];
+    int n = degree + 1;
+    double matrix_entries[2*degree + 1];
     double extended_Y[n];
     double matrix[n*(n+1)];
 
-    power_arrays(recordP, numOfEntries, matrix_entries, extended_Y, n);
+    power_arrays(recordP, numOfEntries, matrix_entries, extended_Y, degree);
     create_extended_matrix(matrix, matrix_entries, extended_Y, n);
-
     gaussian_elimination(n, matrix, coefficients);
+}
+
+int bestPolynomialFit(record_t *recordP, long int numOfEntries, int maxDegree, double alpha) {
+    int degree;
+    double RSSE, newRSSE;
+    for (int k = 2; k < maxDegree; k += 1) {
+        double coefficients[k+1];
+        polynomialRegression(recordP, numOfEntries, coefficients, k);
+        newRSSE = rsse_poly(coefficients, recordP, numOfEntries, k, alpha);
+        if (k == 2) { 
+            RSSE = newRSSE;
+            degree = k;
+        } else if (newRSSE < RSSE) {
+            RSSE = newRSSE;
+            degree = k;
+        }
+    }
+    return degree;
 }

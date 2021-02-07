@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "type_definitions.h"
 
-long int findSize(void) 
+long int findSize(char *filename) 
 { 
   FILE *fp;
   fp=fopen("CovidFaelle_Wien_juni_dez.csv", "r");
@@ -19,11 +19,11 @@ long int findSize(void)
   return lines;
 } 
 
-long int readCSV(record_t* recordsP, header_t* headerP) {
+long int readCSV(char *filename, record_t* recordsP, header_t* headerP) {
     FILE *fp;
     size_t count = 0;
 
-    fp = fopen("CovidFaelle_Wien_juni_dez.csv", "r");
+    fp = fopen(filename, "r");
     if (fp == NULL) {
         fprintf(stderr, "Error reading file\n");
         return 0;
