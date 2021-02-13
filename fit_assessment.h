@@ -13,4 +13,7 @@ double mse(lin_coefficients coefficients, record_t *recordP, long int numOfEntri
 double mse_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree);
 double rsse_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree, double alpha);
 
+error_t calculate_error_lin(lin_coefficients coefficients, record_t *recordP, long int numOfEntries, int mode);
+error_t calculate_error_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree);
+
 #endif

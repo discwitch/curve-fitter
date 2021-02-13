@@ -144,16 +144,34 @@ double mse(lin_coefficients coefficients, record_t *recordP, long int numOfEntri
     return sum_squared_errors / numOfEntries;
 }
 
-double mse_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree){
+double mse_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree) {
     double sum_squared_errors = sse_poly(coefficients, recordP, numOfEntries, degree);
     return sum_squared_errors / numOfEntries;
 }
 
-double rsse_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree, double alpha){
+double rsse_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree, double alpha) {
     double sum_squared_errors = sse_poly(coefficients, recordP, numOfEntries, degree);
     double coefficients_squared_sum = 0;
     for (int i = 0; i < degree +1; i++) {
         coefficients_squared_sum += coefficients[i] * coefficients[i];
     }
     return sum_squared_errors + alpha * coefficients_squared_sum;
+}
+
+error_t calculate_error_lin(lin_coefficients coefficients, record_t *recordP, long int numOfEntries, int mode) {
+    error_t errors;
+    errors.std_error = standard_error(coefficients, recordP, numOfEntries, mode);
+    errors.r_squared = r_squared(coefficients, recordP, numOfEntries, mode);
+    errors.sse = sse(coefficients, recordP, numOfEntries, mode);
+    errors.mse = mse(coefficients, recordP, numOfEntries, mode);
+    return errors;
+}
+
+error_t calculate_error_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree) {
+    error_t errors;
+    errors.std_error = standard_error_poly(coefficients, recordP, numOfEntries, degree);
+    errors.r_squared = r_squared_poly(coefficients, recordP, numOfEntries, degree);
+    errors.sse = sse_poly(coefficients, recordP, numOfEntries, degree);
+    errors.mse = mse_poly(coefficients, recordP, numOfEntries, degree);
+    return errors;
 }
