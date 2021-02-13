@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include "type_definitions.h"
+#include <time.h>
 
 long int findSize(char *filename) 
 { 
   FILE *fp;
-  fp=fopen("CovidFaelle_Wien_juni_dez.csv", "r");
+  fp=fopen(filename, "r");
   long int lines = 0;
 
   if ( fp == NULL ) {
