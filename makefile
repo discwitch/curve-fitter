@@ -10,12 +10,13 @@ ENDFLAGS = -lm
 TARGET = fit
 MAIN = main.c
 MATH = calculations.c
-READ = read_csv.c
+READ = read_write_csv.c
 FITTERS = fitting_functions.c
 TEST = fit_assessment.c
+PRINT = printer.c
 
 $(TARGET):
-	$(CC) $(CFLAGS) $(MAIN) -o $(TARGET)  $(MATH) $(READ) $(FITTERS) $(TEST) $(ENDFLAGS)
+	$(CC) $(CFLAGS) $(MAIN) -o $(TARGET)  $(MATH) $(READ) $(FITTERS) $(TEST) $(PRINT) $(ENDFLAGS)
 
 clean:
 	$(RM) $(TARGET)

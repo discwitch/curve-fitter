@@ -16,4 +16,11 @@ typedef struct {
     char col2[64];
 } header_t;
 
+typedef struct {
+    double std_error;
+    double r_squared;
+    double sse;
+    double mse;
+} error_t;
+
 #endif
