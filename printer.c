@@ -23,12 +23,13 @@ void print_result_lin(lin_coefficients coefficients, error_t errors, int mode) {
         printf("\n");
         printf("Exponential Coefficients: A = %lf, k = %lf\n", coefficients.d, coefficients.k);
     } else if (mode == 2){
-        printf("~~~~~~~~ EXPONENTIAL REGRESSION: y = d + k * ln(x) ~~~~~~~~\n");
+        printf("~~~~~~~~ LOGARITHMIC REGRESSION: y = d + k * ln(x) ~~~~~~~~\n");
         printf("\n");
         printf("Logarithmic Coefficients: d = %lf, k = %lf\n", coefficients.d, coefficients.k);        
     }
     print_error(errors);
 }
+
 void print_result_poly(double *coefficients, error_t errors, int degree) {
     printf("\n");
     printf("~~~~~~~~ POLYNOMIAL REGRESSION: Degree = %i ~~~~~~~~\n", degree);

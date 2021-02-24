@@ -22,5 +22,13 @@ typedef struct {
     double sse;
     double mse;
 } error_t;
+typedef struct {
+    char filename[64];
+    char limiter[1];
+    char mode[3];
+    int degree;
+    int automatic;
+    int write;
+} args_t;
 
 #endif
