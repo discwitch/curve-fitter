@@ -3,7 +3,7 @@
 #include <time.h>
 #include <string.h>
 
-void create_filename(char *filename, header_t header) {
+void create_filename(char *filename, char *original_filename) {
     time_t timer;
     char buffer[26];
     struct tm* tm_info;
@@ -11,11 +11,7 @@ void create_filename(char *filename, header_t header) {
     tm_info = localtime(&timer);
     strftime(buffer, 26, "%Y-%m-%d-%H:%M:%S", tm_info);
     
-    int size_col2 = strlen(header.col2);
-    header.col2[size_col2 - 1] = '\0';
-    strcpy(filename, header.col1);
-    strcat(filename, "-");
-    strcat(filename, header.col2);
+    strcpy(filename, original_filename);
     strcat(filename, "-");
     strcat(filename, buffer);
 }
@@ -64,7 +60,7 @@ long int readCSV(char *filename, record_t* recordsP, header_t* headerP) {
 void write_lin(char *filename, lin_coefficients coefficients, error_t errors, int mode) {
     FILE *fp;
 
-    fp = fopen(filename, "w");
+    fp = fopen(filename, "a");
     if (fp == NULL) {
         fprintf(stderr, "Error opening file\n");
     }
@@ -93,7 +89,7 @@ void write_lin(char *filename, lin_coefficients coefficients, error_t errors, in
 void write_poly(char *filename, double *coefficients, error_t errors, int degree) {
     FILE *fp;
 
-    fp = fopen(filename, "w");
+    fp = fopen(filename, "a");
     if (fp == NULL) {
         fprintf(stderr, "Error opening file\n");
     }
