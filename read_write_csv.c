@@ -1,6 +1,24 @@
 #include <stdio.h>
 #include "type_definitions.h"
 #include <time.h>
+#include <string.h>
+
+void create_filename(char *filename, header_t header) {
+    time_t timer;
+    char buffer[26];
+    struct tm* tm_info;
+    timer = time(NULL);
+    tm_info = localtime(&timer);
+    strftime(buffer, 26, "%Y-%m-%d-%H:%M:%S", tm_info);
+    
+    int size_col2 = strlen(header.col2);
+    header.col2[size_col2 - 1] = '\0';
+    strcpy(filename, header.col1);
+    strcat(filename, "-");
+    strcat(filename, header.col2);
+    strcat(filename, "-");
+    strcat(filename, buffer);
+}
 
 long int findSize(char *filename) 
 { 
@@ -41,4 +59,56 @@ long int readCSV(char *filename, record_t* recordsP, header_t* headerP) {
     fclose(fp);
 
     return count - 1;
+}
+
+void write_lin(char *filename, lin_coefficients coefficients, error_t errors, int mode) {
+    FILE *fp;
+
+    fp = fopen(filename, "w");
+    if (fp == NULL) {
+        fprintf(stderr, "Error opening file\n");
+    }
+    if (mode == 0) {
+        fprintf(fp, "~~~~~~~~ LINEAR REGRESSION: y = kx * d ~~~~~~~~\n");
+        fprintf(fp, "\n");
+        fprintf(fp, "Linear Coefficients: k = %lf, d = %lf\n", coefficients.k, coefficients.d);
+    } else if (mode == 1){
+        fprintf(fp, "~~~~~~~~ EXPONENTIAL REGRESSION: y = A * exp(kx) ~~~~~~~~\n");
+        fprintf(fp, "\n");
+        fprintf(fp, "Exponential Coefficients: A = %lf, k = %lf\n", coefficients.d, coefficients.k);
+    } else if (mode == 2){
+        fprintf(fp, "~~~~~~~~ LOGARITHMIC REGRESSION: y = d + k * ln(x) ~~~~~~~~\n");
+        fprintf(fp, "\n");
+        fprintf(fp, "Logarithmic Coefficients: d = %lf, k = %lf\n", coefficients.d, coefficients.k);        
+    }
+    fprintf(fp, "\n");
+    fprintf(fp, "Regression Standard Error: %lf\n", errors.std_error);
+    fprintf(fp, "Regression R2: %lf\n", errors.r_squared);
+    fprintf(fp, "SSE: %lf\n", errors.sse);
+    fprintf(fp, "MSE: %lf\n", errors.mse);
+    fprintf(fp, "\n");
+    fclose(fp);
+}
+
+void write_poly(char *filename, double *coefficients, error_t errors, int degree) {
+    FILE *fp;
+
+    fp = fopen(filename, "w");
+    if (fp == NULL) {
+        fprintf(stderr, "Error opening file\n");
+    }
+    fprintf(fp, "~~~~~~~~ POLYNOMIAL REGRESSION: Degree = %i ~~~~~~~~\n", degree);
+    fprintf(fp, "\n");
+    fprintf(fp, "Coefficients: \n");
+    for(int i=0; i<degree+1; i++)
+	{
+	    fprintf(fp, "a[%d] = %0.3lf\n", i, coefficients[i]);
+	}
+    fprintf(fp, "\n");
+    fprintf(fp, "Regression Standard Error: %lf\n", errors.std_error);
+    fprintf(fp, "Regression R2: %lf\n", errors.r_squared);
+    fprintf(fp, "SSE: %lf\n", errors.sse);
+    fprintf(fp, "MSE: %lf\n", errors.mse);
+    fprintf(fp, "\n");
+    fclose(fp);
 }
