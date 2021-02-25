@@ -74,24 +74,18 @@ void write_lin(char *filepath, lin_coefficients coefficients, error_t errors, in
         fprintf(stderr, "Error opening file\n");
     }
     if (mode == 0) {
-        fprintf(fp, "~~~~~~~~ LINEAR REGRESSION: y = kx * d ~~~~~~~~\n");
-        fprintf(fp, "\n");
-        fprintf(fp, "Linear Coefficients: k = %lf, d = %lf\n", coefficients.k, coefficients.d);
+        fprintf(fp, "linear\t\t");
+        fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+        fprintf(fp, "    d = %lf, k = %lf\n", coefficients.d, coefficients.k);
     } else if (mode == 1){
-        fprintf(fp, "~~~~~~~~ EXPONENTIAL REGRESSION: y = A * exp(kx) ~~~~~~~~\n");
-        fprintf(fp, "\n");
-        fprintf(fp, "Exponential Coefficients: A = %lf, k = %lf\n", coefficients.d, coefficients.k);
+        fprintf(fp, "exponential\t");
+        fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+        fprintf(fp, "    A = %lf, k = %lf\n", coefficients.d, coefficients.k);
     } else if (mode == 2){
-        fprintf(fp, "~~~~~~~~ LOGARITHMIC REGRESSION: y = d + k * ln(x) ~~~~~~~~\n");
-        fprintf(fp, "\n");
-        fprintf(fp, "Logarithmic Coefficients: d = %lf, k = %lf\n", coefficients.d, coefficients.k);        
+        fprintf(fp, "logarithmic\t");
+        fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+        fprintf(fp, "    d = %lf, k = %lf\n", coefficients.d, coefficients.k);        
     }
-    fprintf(fp, "\n");
-    fprintf(fp, "Regression Standard Error: %lf\n", errors.std_error);
-    fprintf(fp, "Regression R2: %lf\n", errors.r_squared);
-    fprintf(fp, "SSE: %lf\n", errors.sse);
-    fprintf(fp, "MSE: %lf\n", errors.mse);
-    fprintf(fp, "\n");
     fclose(fp);
 }
 
@@ -104,18 +98,14 @@ void write_poly(char *filepath, double *coefficients, error_t errors, int degree
         fprintf(stderr, "\n");
         fprintf(stderr, "Error opening file\n");
     }
-    fprintf(fp, "~~~~~~~~ POLYNOMIAL REGRESSION: Degree = %i ~~~~~~~~\n", degree);
-    fprintf(fp, "\n");
-    fprintf(fp, "Coefficients: \n");
+    fprintf(fp, "polynomial: %i\t", degree);
+    fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+    fprintf(fp, "    ");
     for(int i=0; i<degree+1; i++)
 	{
-	    fprintf(fp, "a[%d] = %0.3lf\n", i, coefficients[i]);
+	    fprintf(fp, "a[%d] = %lf", i, coefficients[i]);
+        if (i != degree) fprintf(fp, ", ");
 	}
-    fprintf(fp, "\n");
-    fprintf(fp, "Regression Standard Error: %lf\n", errors.std_error);
-    fprintf(fp, "Regression R2: %lf\n", errors.r_squared);
-    fprintf(fp, "SSE: %lf\n", errors.sse);
-    fprintf(fp, "MSE: %lf\n", errors.mse);
     fprintf(fp, "\n");
     fclose(fp);
 }

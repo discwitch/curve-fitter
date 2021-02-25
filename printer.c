@@ -4,40 +4,41 @@
 
 #include "type_definitions.h"
 
-void print_error(error_t errors) {
+void print_header() {
     printf("\n");
-    printf("Regression Standard Error: %lf\n", errors.std_error);
-    printf("Regression R2: %lf\n", errors.r_squared);
-    printf("SSE: %lf\n", errors.sse);
-    printf("MSE: %lf\n", errors.mse);
+    printf("Fit \t\t |     Std. Error    | \t R2 \t | \t SSE \t | \t MSE \t | \t Coefficients \n");
+    printf("–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n");
+    printf("\n");
+}
+
+void print_error(error_t errors) {
+    printf("       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
 }
 
 void print_result_lin(lin_coefficients coefficients, error_t errors, int mode) {
-    printf("\n");
     if (mode == 0) {
-        printf("~~~~~~~~ LINEAR REGRESSION: y = kx * d ~~~~~~~~\n");
-        printf("\n");
-        printf("Linear Coefficients: k = %lf, d = %lf\n", coefficients.k, coefficients.d);
+        printf("linear\t\t");
+        print_error(errors);
+        printf("    d = %lf, k = %lf\n", coefficients.d, coefficients.k);
     } else if (mode == 1){
-        printf("~~~~~~~~ EXPONENTIAL REGRESSION: y = A * exp(kx) ~~~~~~~~\n");
-        printf("\n");
-        printf("Exponential Coefficients: A = %lf, k = %lf\n", coefficients.d, coefficients.k);
+        printf("exponential\t");
+        print_error(errors);
+        printf("    A = %lf, k = %lf\n", coefficients.d, coefficients.k);
     } else if (mode == 2){
-        printf("~~~~~~~~ LOGARITHMIC REGRESSION: y = d + k * ln(x) ~~~~~~~~\n");
-        printf("\n");
-        printf("Logarithmic Coefficients: d = %lf, k = %lf\n", coefficients.d, coefficients.k);        
+        printf("logarithmic\t");
+        print_error(errors);
+        printf("    d = %lf, k = %lf\n", coefficients.d, coefficients.k);        
     }
-    print_error(errors);
 }
 
 void print_result_poly(double *coefficients, error_t errors, int degree) {
-    printf("\n");
-    printf("~~~~~~~~ POLYNOMIAL REGRESSION: Degree = %i ~~~~~~~~\n", degree);
-    printf("\n");
-    printf("Coefficients: \n");
+    printf("polynomial: %i\t", degree);
+    print_error(errors);
+    printf("    ");
     for(int i=0; i<degree+1; i++)
 	{
-	    printf("a[%d] = %0.3lf\n", i, coefficients[i]);
+	    printf("a[%d] = %lf", i, coefficients[i]);
+        if (i != degree) printf(", ");
 	}
-    print_error(errors);
+    printf("\n");
 }
