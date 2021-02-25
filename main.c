@@ -34,6 +34,7 @@ int main(int argc, char **argv)
     {"help", no_argument, NULL, 'h'},
     {"version", no_argument, NULL, 'v'},
     {"info", no_argument, NULL, 'i'},
+    {"write", optional_argument, NULL, 'w'},
     {NULL, no_argument, NULL, 'n'}
     };
 
@@ -42,6 +43,7 @@ int main(int argc, char **argv)
     bool silent = false; // if true, there will be no console logging
     bool file_path_exists = false; // set to true if <file-path> has been provided
     bool header_printed = false; // set to true when header has been displayed
+    bool export_to_csv = false;
 
     long int size = 0; 
     long int numOfEntries;
@@ -57,10 +59,10 @@ int main(int argc, char **argv)
     if (file_path_exists) {
         char *filename = basename(argv[1]);
         numOfEntries = readCSV(argv[1], records, &header);
-        create_filepath(export_path, filename); 
+        create_filepath(export_path, filename, export_to_csv); 
     }
 
-    while ((option = getopt_long(argc, argv, "ws", long_options, NULL)) != -1) {
+    while ((option = getopt_long(argc, argv, "s", long_options, NULL)) != -1) {
         switch (option) {
             case 'v':
                 {
@@ -70,14 +72,15 @@ int main(int argc, char **argv)
             case 'h':
                 {
                 printf("\n");
-                printf("usage: ./fit [--version] [--help] [<file-path> <write/silent> <commands>]\n");
+                printf("usage: ./fit [--version] [--help] [--info] [<file-path> <write/silent> <commands>]\n");
                 printf("\n");
                 printf("Regression Standard Error, R2, Sum of Squared Errors (SSE)\n");
                 printf("and Mean Squared Error (MSE) are returned for all fits.\n");
                 printf("\n");
                 printf("Write/Export and Silent tags must be set after <file-path> \n");
                 printf("and before curve-fitting instructions.\n");
-                printf("\t  -w \t\t Write/Export following fitting instructions to file.\n");
+                printf("\t  --write \t Write/Export following fitting instructions to .txt file (default).\n");
+                printf("\t  --write=csv \t Write/Export following fitting instructions to .csv file.\n");
                 printf("\t  -s \t\t Disable console logging.\n");
                 printf("\n");
                 printf("Curve-Fitting Commands:\n");
@@ -87,8 +90,10 @@ int main(int argc, char **argv)
                 printf("\t --pol <int> \t Polynomial Regression, requires input for degree\n");
                 printf("\t --all <int> \t all four regression variants,\n");
                 printf("\t\t\t requires input for polynomial degree\n");
-                printf("\n");
                 printf("Fitting commands can be chained, e.g. \"--pol 2 --pol 3 --lin -- exp\"\n");
+                printf("\n");
+                printf("Other:\n");
+                printf("\t --info \t Info on coefficient nomenclature of results\n");
                 printf("\n");
                 }
                 break;
@@ -107,14 +112,24 @@ int main(int argc, char **argv)
                 }
                 break;
             case 'w':
-                {
+                {   if (optarg && strcmp(optarg, "csv") == 0) {
+                        export_to_csv = true;
+                    }
                     if (file_path_exists) {
+                        char *filename = basename(argv[1]);
+                        numOfEntries = readCSV(argv[1], records, &header);
+                        create_filepath(export_path, filename, export_to_csv); 
+ 
                         write = true;
                         FILE *fp;
                         fp = fopen(export_path, "w");
+                        if (export_to_csv) {
+                            fprintf(fp, "Fit;Std_Error;R2;SSE;MSE;Coefficients\n");
+                        } else {
                             fprintf(fp, "Fit \t\t |     Std. Error    | \t R2 \t | \t SSE \t | \t MSE \t | \t Coefficients \n");
                             fprintf(fp, "–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n");
                             fprintf(fp, "\n");
+                        }
                         fclose(fp);
 
                         printf("\n");
@@ -158,10 +173,10 @@ int main(int argc, char **argv)
                     }
 
                     if (write) {
-                        write_lin(export_path, linCoefficients, lin, 0);
-                        write_lin(export_path, expCoefficients, exp, 1);
-                        write_lin(export_path, logCoefficients, log, 2);
-                        write_poly(export_path, coefficients, poly, degree);
+                        write_lin(export_path, linCoefficients, lin, 0, export_to_csv);
+                        write_lin(export_path, expCoefficients, exp, 1, export_to_csv);
+                        write_lin(export_path, logCoefficients, log, 2, export_to_csv);
+                        write_poly(export_path, coefficients, poly, degree, export_to_csv);
                     }
                 } else {
                     no_file_path_error();
@@ -172,7 +187,7 @@ int main(int argc, char **argv)
                     lin_coefficients linCoefficients = linearRegression(records, numOfEntries);
                     error_t lin = calculate_error_lin(linCoefficients, records, numOfEntries, 0);
                     if (!silent) print_result_lin(linCoefficients, lin, 0);
-                    if (write) write_lin(export_path, linCoefficients, lin, 0);
+                    if (write) write_lin(export_path, linCoefficients, lin, 0, export_to_csv);
                 }
                 break;
             case '1': 
@@ -186,7 +201,7 @@ int main(int argc, char **argv)
                         }
                         print_result_lin(expCoefficients, exp, 1);
                     }
-                    if (write) write_lin(export_path, expCoefficients, exp, 1);
+                    if (write) write_lin(export_path, expCoefficients, exp, 1, export_to_csv);
                 } else {
                     no_file_path_error();
                 }
@@ -202,7 +217,7 @@ int main(int argc, char **argv)
                         }
                         print_result_lin(logCoefficients, log, 2); 
                         }
-                    if (write) write_lin(export_path, logCoefficients, log, 2);
+                    if (write) write_lin(export_path, logCoefficients, log, 2, export_to_csv);
                 } else {
                     no_file_path_error();
                 }
@@ -225,21 +240,13 @@ int main(int argc, char **argv)
                         }
                         print_result_poly(coefficients, poly, degree);
                     }
-                    if (write) write_poly(export_path, coefficients, poly, degree);
+                    if (write) write_poly(export_path, coefficients, poly, degree, export_to_csv);
                 } else {
                     no_file_path_error();
                 }
                 break;
         }
     }
-    /* for (long i = 1; i < numOfEntries; i++) {
-        printf("%lf, %lf\n", records[i].X, records[i].Y);
-    } */
-
-    // double alpha = 1;
-    // int maxDegree = 12;
-    // int degree = bestPolynomialFit(records, numOfEntries, maxDegree, alpha);
-
     return 0;
 }
 

@@ -2,12 +2,13 @@
 #include "type_definitions.h"
 #include <time.h>
 #include <string.h>
+#include <stdbool.h>
 
 void no_file_path_error() {
     printf("No file-path.\n");
 }
 
-void create_filepath(char *filepath, char *original_filename) {
+void create_filepath(char *filepath, char *original_filename, bool export_to_csv) {
     time_t timer;
     char buffer[26];
     struct tm* tm_info;
@@ -19,7 +20,11 @@ void create_filepath(char *filepath, char *original_filename) {
     strcat(filepath, original_filename);
     strcat(filepath, "-");
     strcat(filepath, buffer);
-    strcat(filepath, ".txt");
+    if (export_to_csv) {
+        strcat(filepath, ".csv");
+    } else {
+        strcat(filepath, ".txt");
+    }
 }
 
 long int findSize(char *filename) 
@@ -63,7 +68,7 @@ long int readCSV(char *filename, record_t* recordsP, header_t* headerP) {
     return count - 1;
 }
 
-void write_lin(char *filepath, lin_coefficients coefficients, error_t errors, int mode) {
+void write_lin(char *filepath, lin_coefficients coefficients, error_t errors, int mode, bool write_to_csv) {
 
 
     FILE *fp;
@@ -74,22 +79,34 @@ void write_lin(char *filepath, lin_coefficients coefficients, error_t errors, in
         fprintf(stderr, "Error opening file\n");
     }
     if (mode == 0) {
-        fprintf(fp, "linear\t\t");
-        fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
-        fprintf(fp, "    d = %lf, k = %lf\n", coefficients.d, coefficients.k);
+        if (write_to_csv) {
+            fprintf(fp, "linear;%0.6lf;%0.6lf;%0.6lf;%0.6lf;d = %lf;k = %lf\n", errors.std_error, errors.r_squared, errors.sse, errors.mse, coefficients.d, coefficients.k);
+        } else {
+            fprintf(fp, "linear\t\t");
+            fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+            fprintf(fp, "    d = %lf, k = %lf\n", coefficients.d, coefficients.k);
+        }
     } else if (mode == 1){
-        fprintf(fp, "exponential\t");
-        fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
-        fprintf(fp, "    A = %lf, k = %lf\n", coefficients.d, coefficients.k);
+        if (write_to_csv) {
+            fprintf(fp, "exponential;%0.6lf;%0.6lf;%0.6lf;%0.6lf;A = %lf;k = %lf\n", errors.std_error, errors.r_squared, errors.sse, errors.mse, coefficients.d, coefficients.k);
+        } else {
+            fprintf(fp, "exponential\t");
+            fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+            fprintf(fp, "    A = %lf, k = %lf\n", coefficients.d, coefficients.k);
+        }
     } else if (mode == 2){
-        fprintf(fp, "logarithmic\t");
-        fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
-        fprintf(fp, "    d = %lf, k = %lf\n", coefficients.d, coefficients.k);        
+        if (write_to_csv) {
+            fprintf(fp, "logarithmic;%0.6lf;%0.6lf;%0.6lf;%0.6lf;d = %lf;k = %lf\n", errors.std_error, errors.r_squared, errors.sse, errors.mse, coefficients.d, coefficients.k);
+        } else {
+            fprintf(fp, "logarithmic\t");
+            fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+            fprintf(fp, "    d = %lf, k = %lf\n", coefficients.d, coefficients.k);
+        }       
     }
     fclose(fp);
 }
 
-void write_poly(char *filepath, double *coefficients, error_t errors, int degree) {
+void write_poly(char *filepath, double *coefficients, error_t errors, int degree, bool write_to_csv) {
 
     FILE *fp;
 
@@ -98,14 +115,25 @@ void write_poly(char *filepath, double *coefficients, error_t errors, int degree
         fprintf(stderr, "\n");
         fprintf(stderr, "Error opening file\n");
     }
-    fprintf(fp, "polynomial: %i\t", degree);
-    fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
-    fprintf(fp, "    ");
-    for(int i=0; i<degree+1; i++)
-	{
-	    fprintf(fp, "a[%d] = %lf", i, coefficients[i]);
-        if (i != degree) fprintf(fp, ", ");
-	}
-    fprintf(fp, "\n");
+    if (write_to_csv)
+    {   
+        fprintf(fp, "polynomial: %i;%0.6lf;%0.6lf;%0.6lf;%0.6lf;", degree, errors.std_error, errors.r_squared, errors.sse, errors.mse);
+        for(int i=0; i<degree+1; i++)
+	    {
+            fprintf(fp, "a[%d] = %lf", i, coefficients[i]);
+            if (i != degree) fprintf(fp, ";");
+	    }
+        fprintf(fp, "\n");
+    } else {
+        fprintf(fp, "polynomial: %i\t", degree);
+        fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+        fprintf(fp, "    ");
+        for(int i=0; i<degree+1; i++)
+        {
+            fprintf(fp, "a[%d] = %lf", i, coefficients[i]);
+            if (i != degree) fprintf(fp, ", ");
+        }
+        fprintf(fp, "\n");
+    }
     fclose(fp);
 }
