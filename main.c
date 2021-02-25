@@ -88,7 +88,9 @@ int main(int argc, char **argv)
                 printf("\t --exp \t\t Exponential regression\n");
                 printf("\t --log \t\t Logarithmic regression (natural logarithm ln)\n");
                 printf("\t --pol <int> \t Polynomial Regression, requires input for degree\n");
+                printf("\t --pol <int1:int2> \t Polynomial Regression, from degree int1 up and including degree int2\n");
                 printf("\t --all <int> \t all four regression variants,\n");
+                printf("\t --all <int1:int2> \t all four regression variants,\n");
                 printf("\t\t\t requires input for polynomial degree\n");
                 printf("Fitting commands can be chained, e.g. \"--pol 2 --pol 3 --lin -- exp\"\n");
                 printf("\n");
@@ -151,16 +153,6 @@ int main(int argc, char **argv)
                     lin_coefficients logCoefficients = logarithmicRegression(records, numOfEntries);
                     error_t log = calculate_error_lin(logCoefficients, records, numOfEntries, 2);
 
-                    int degree = atoi(optarg);
-                    if (degree == 0) {
-                        fprintf(stderr, "invalid -pol option \"%s\" - expecting an integer\n", 
-                        optarg?optarg:"");
-                        exit(EXIT_FAILURE);
-                        }
-                    double coefficients[degree + 1];
-                    polynomialRegression(records, numOfEntries, coefficients, degree);
-                    error_t poly = calculate_error_poly(coefficients, records, numOfEntries, degree);
-                    
                     if (!silent) {
                         if (!header_printed) {
                             print_header();
@@ -169,14 +161,48 @@ int main(int argc, char **argv)
                         print_result_lin(linCoefficients, lin, 0);
                         print_result_lin(expCoefficients, exp, 1);
                         print_result_lin(logCoefficients, log, 2);
-                        print_result_poly(coefficients, poly, degree);
                     }
 
                     if (write) {
                         write_lin(export_path, linCoefficients, lin, 0, export_to_csv);
                         write_lin(export_path, expCoefficients, exp, 1, export_to_csv);
                         write_lin(export_path, logCoefficients, log, 2, export_to_csv);
-                        write_poly(export_path, coefficients, poly, degree, export_to_csv);
+                    }
+
+                    poly_t limits;
+                    bool limits_exist = poly_parse(optarg, &limits);
+                    if (limits_exist) {
+                        for (int degree = limits.begin; degree < limits.end + 1; degree++) {
+                            double coefficients[degree + 1];
+                            polynomialRegression(records, numOfEntries, coefficients, degree);
+                            error_t poly = calculate_error_poly(coefficients, records, numOfEntries, degree);
+                            if (!silent) {
+                                if (!header_printed) {
+                                    print_header();
+                                    header_printed = true;
+                                }
+                                print_result_poly(coefficients, poly, degree);
+                            }
+                            if (write) write_poly(export_path, coefficients, poly, degree, export_to_csv);
+                        }
+                    } else {
+                        int degree = atoi(optarg);
+                        if (degree == 0) {
+                            fprintf(stderr, "invalid -pol option \"%s\" - expecting an integer or\n <int:int> limits for polynomial degree\n", 
+                            optarg?optarg:"");
+                            exit(EXIT_FAILURE);
+                            }
+                        double coefficients[degree + 1];
+                        polynomialRegression(records, numOfEntries, coefficients, degree);
+                        error_t poly = calculate_error_poly(coefficients, records, numOfEntries, degree);
+                        if (!silent) {
+                            if (!header_printed) {
+                                print_header();
+                                header_printed = true;
+                            }
+                            print_result_poly(coefficients, poly, degree);
+                        }
+                        if (write) write_poly(export_path, coefficients, poly, degree, export_to_csv);
                     }
                 } else {
                     no_file_path_error();
@@ -227,7 +253,6 @@ int main(int argc, char **argv)
                     poly_t limits;
                     bool limits_exist = poly_parse(optarg, &limits);
                     if (limits_exist) {
-                        printf("%d, %d\n", limits.begin, limits.end);
                         for (int degree = limits.begin; degree < limits.end + 1; degree++) {
                             double coefficients[degree + 1];
                             polynomialRegression(records, numOfEntries, coefficients, degree);
