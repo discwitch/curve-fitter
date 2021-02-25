@@ -149,15 +149,6 @@ double mse_poly(double *coefficients, record_t *recordP, long int numOfEntries, 
     return sum_squared_errors / numOfEntries;
 }
 
-double rsse_poly(double *coefficients, record_t *recordP, long int numOfEntries, int degree, double alpha) {
-    double sum_squared_errors = sse_poly(coefficients, recordP, numOfEntries, degree);
-    double coefficients_squared_sum = 0;
-    for (int i = 0; i < degree +1; i++) {
-        coefficients_squared_sum += coefficients[i] * coefficients[i];
-    }
-    return sum_squared_errors + alpha * coefficients_squared_sum;
-}
-
 error_t calculate_error_lin(lin_coefficients coefficients, record_t *recordP, long int numOfEntries, int mode) {
     error_t errors;
     errors.std_error = standard_error(coefficients, recordP, numOfEntries, mode);
