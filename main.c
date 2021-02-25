@@ -5,6 +5,7 @@
 #include <getopt.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <libgen.h>
 
 #include "type_definitions.h"
 #include "read_write_csv.h"
@@ -42,7 +43,7 @@ int main(int argc, char **argv)
 
     long int size = 0; 
     long int numOfEntries;
-    char filename[100];
+    char export_path[128];
 
     if (access( argv[1], R_OK ) == 0) {
         file_path_exists = true;
@@ -52,8 +53,9 @@ int main(int argc, char **argv)
     record_t records[size];
     header_t header;
     if (file_path_exists) {
+        char *filename = basename(argv[1]);
         numOfEntries = readCSV(argv[1], records, &header);
-        create_filename(filename, argv[1]); 
+        create_filepath(export_path, filename); 
     }
 
     while ((option = getopt_long(argc, argv, "ws", long_options, NULL)) != -1) {
@@ -98,9 +100,10 @@ int main(int argc, char **argv)
                     if (file_path_exists) {
                         write = true;
                         FILE *fp;
-                        fp = fopen(filename, "w");
-                        fprintf(fp, "%s-%s\n", header.col1, header.col2);
-                        fprintf(fp, "\n");
+                        fp = fopen(export_path, "w");
+                        printf("\n");
+                        printf("Results exported to %s", export_path);
+                        printf("\n");
                         fclose(fp);
                     } else {
                         no_file_path_error();
@@ -136,10 +139,10 @@ int main(int argc, char **argv)
                     }
 
                     if (write) {
-                        write_lin(filename, linCoefficients, lin, 0);
-                        write_lin(filename, expCoefficients, exp, 1);
-                        write_lin(filename, logCoefficients, log, 2);
-                        write_poly(filename, coefficients, poly, degree);
+                        write_lin(export_path, linCoefficients, lin, 0);
+                        write_lin(export_path, expCoefficients, exp, 1);
+                        write_lin(export_path, logCoefficients, log, 2);
+                        write_poly(export_path, coefficients, poly, degree);
                     }
                 } else {
                     no_file_path_error();
@@ -150,7 +153,7 @@ int main(int argc, char **argv)
                     lin_coefficients linCoefficients = linearRegression(records, numOfEntries);
                     error_t lin = calculate_error_lin(linCoefficients, records, numOfEntries, 0);
                     if (!silent) print_result_lin(linCoefficients, lin, 0);
-                    if (write) write_lin(filename, linCoefficients, lin, 0);
+                    if (write) write_lin(export_path, linCoefficients, lin, 0);
                 }
                 break;
             case '1': 
@@ -158,7 +161,7 @@ int main(int argc, char **argv)
                     lin_coefficients expCoefficients = exponentialRegression(records, numOfEntries);
                     error_t exp = calculate_error_lin(expCoefficients, records, numOfEntries, 1);
                     if (!silent) print_result_lin(expCoefficients, exp, 1);
-                    if (write) write_lin(filename, expCoefficients, exp, 1);
+                    if (write) write_lin(export_path, expCoefficients, exp, 1);
                 } else {
                     no_file_path_error();
                 }
@@ -168,7 +171,7 @@ int main(int argc, char **argv)
                     lin_coefficients logCoefficients = logarithmicRegression(records, numOfEntries);
                     error_t log = calculate_error_lin(logCoefficients, records, numOfEntries, 2);
                     if (!silent) print_result_lin(logCoefficients, log, 2);
-                    if (write) write_lin(filename, logCoefficients, log, 2);
+                    if (write) write_lin(export_path, logCoefficients, log, 2);
                 } else {
                     no_file_path_error();
                 }
@@ -185,7 +188,7 @@ int main(int argc, char **argv)
                     polynomialRegression(records, numOfEntries, coefficients, degree);
                     error_t poly = calculate_error_poly(coefficients, records, numOfEntries, degree);
                     if (!silent) print_result_poly(coefficients, poly, degree);
-                    if (write) write_poly(filename, coefficients, poly, degree);
+                    if (write) write_poly(export_path, coefficients, poly, degree);
                 } else {
                     no_file_path_error();
                 }

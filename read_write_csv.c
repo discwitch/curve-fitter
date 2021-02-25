@@ -7,7 +7,7 @@ void no_file_path_error() {
     printf("No file-path.\n");
 }
 
-void create_filename(char *filename, char *original_filename) {
+void create_filepath(char *filepath, char *original_filename) {
     time_t timer;
     char buffer[26];
     struct tm* tm_info;
@@ -15,9 +15,11 @@ void create_filename(char *filename, char *original_filename) {
     tm_info = localtime(&timer);
     strftime(buffer, 26, "%Y-%m-%d-%H:%M:%S", tm_info);
     
-    strcpy(filename, original_filename);
-    strcat(filename, "-");
-    strcat(filename, buffer);
+    strcpy(filepath, "./results/");
+    strcat(filepath, original_filename);
+    strcat(filepath, "-");
+    strcat(filepath, buffer);
+    strcat(filepath, ".txt");
 }
 
 long int findSize(char *filename) 
@@ -61,11 +63,14 @@ long int readCSV(char *filename, record_t* recordsP, header_t* headerP) {
     return count - 1;
 }
 
-void write_lin(char *filename, lin_coefficients coefficients, error_t errors, int mode) {
+void write_lin(char *filepath, lin_coefficients coefficients, error_t errors, int mode) {
+
+
     FILE *fp;
 
-    fp = fopen(filename, "a");
+    fp = fopen(filepath, "a");
     if (fp == NULL) {
+        fprintf(stderr, "\n");
         fprintf(stderr, "Error opening file\n");
     }
     if (mode == 0) {
@@ -90,11 +95,13 @@ void write_lin(char *filename, lin_coefficients coefficients, error_t errors, in
     fclose(fp);
 }
 
-void write_poly(char *filename, double *coefficients, error_t errors, int degree) {
+void write_poly(char *filepath, double *coefficients, error_t errors, int degree) {
+
     FILE *fp;
 
-    fp = fopen(filename, "a");
+    fp = fopen(filepath, "a");
     if (fp == NULL) {
+        fprintf(stderr, "\n");
         fprintf(stderr, "Error opening file\n");
     }
     fprintf(fp, "~~~~~~~~ POLYNOMIAL REGRESSION: Degree = %i ~~~~~~~~\n", degree);
