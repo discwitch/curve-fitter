@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "type_definitions.h"
 #include <time.h>
 #include <string.h>
@@ -136,4 +137,20 @@ void write_poly(char *filepath, double *coefficients, error_t errors, int degree
         fprintf(fp, "\n");
     }
     fclose(fp);
+}
+
+bool poly_parse(char *input_string, poly_t *limits) {
+    char delim[] = ":";
+    if (strlen(input_string) <= 2 || strchr(input_string, ':') == 0) {
+        return false;
+    }
+
+	char *ptr = strtok(input_string, delim);
+	limits -> begin = atoi(ptr);
+    ptr = strtok(NULL, delim);
+    limits -> end = atoi(ptr);
+
+    if (limits->begin != 0 && limits->end != 0) {
+        return true;
+    } else return false;
 }

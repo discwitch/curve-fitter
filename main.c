@@ -224,23 +224,42 @@ int main(int argc, char **argv)
                 break;
             case 'p': 
                 if (file_path_exists) {
-                    int degree = atoi(optarg);
-                    if (degree == 0) {
-                        fprintf(stderr, "invalid -pol option \"%s\" - expecting an integer\n", 
-                        optarg?optarg:"");
-                        exit(EXIT_FAILURE);
+                    poly_t limits;
+                    bool limits_exist = poly_parse(optarg, &limits);
+                    if (limits_exist) {
+                        printf("%d, %d\n", limits.begin, limits.end);
+                        for (int degree = limits.begin; degree < limits.end + 1; degree++) {
+                            double coefficients[degree + 1];
+                            polynomialRegression(records, numOfEntries, coefficients, degree);
+                            error_t poly = calculate_error_poly(coefficients, records, numOfEntries, degree);
+                            if (!silent) {
+                                if (!header_printed) {
+                                    print_header();
+                                    header_printed = true;
+                                }
+                                print_result_poly(coefficients, poly, degree);
+                            }
+                            if (write) write_poly(export_path, coefficients, poly, degree, export_to_csv);
                         }
-                    double coefficients[degree + 1];
-                    polynomialRegression(records, numOfEntries, coefficients, degree);
-                    error_t poly = calculate_error_poly(coefficients, records, numOfEntries, degree);
-                    if (!silent) {
-                        if (!header_printed) {
-                            print_header();
-                            header_printed = true;
+                    } else {
+                        int degree = atoi(optarg);
+                        if (degree == 0) {
+                            fprintf(stderr, "invalid -pol option \"%s\" - expecting an integer or\n <int:int> limits for polynomial degree\n", 
+                            optarg?optarg:"");
+                            exit(EXIT_FAILURE);
+                            }
+                        double coefficients[degree + 1];
+                        polynomialRegression(records, numOfEntries, coefficients, degree);
+                        error_t poly = calculate_error_poly(coefficients, records, numOfEntries, degree);
+                        if (!silent) {
+                            if (!header_printed) {
+                                print_header();
+                                header_printed = true;
+                            }
+                            print_result_poly(coefficients, poly, degree);
                         }
-                        print_result_poly(coefficients, poly, degree);
+                        if (write) write_poly(export_path, coefficients, poly, degree, export_to_csv);
                     }
-                    if (write) write_poly(export_path, coefficients, poly, degree, export_to_csv);
                 } else {
                     no_file_path_error();
                 }

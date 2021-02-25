@@ -31,4 +31,9 @@ typedef struct {
     int write;
 } args_t;
 
+typedef struct {
+    int begin;
+    int end;
+} poly_t;
+
 #endif
