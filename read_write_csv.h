@@ -3,6 +3,7 @@
 
 #include "type_definitions.h"
 
+void no_file_path_error();
 void create_filename(char *filename, char *original_filename);
 long int findSize(char *filename);
 int readCSV(char *filename, record_t* records, header_t* header);

@@ -3,6 +3,10 @@
 #include <time.h>
 #include <string.h>
 
+void no_file_path_error() {
+    printf("No file-path.\n");
+}
+
 void create_filename(char *filename, char *original_filename) {
     time_t timer;
     char buffer[26];
