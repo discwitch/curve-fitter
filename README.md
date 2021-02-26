@@ -7,7 +7,7 @@ The result can be exported to a .txt or .csv file.
 ## Version 1.0.0
 ## Installation
 
-To compile the programe, use 
+To compile the program, use 
 
 ```bash
 make
@@ -15,23 +15,23 @@ make
 ## Usage
 
 ```bash
-./fit <filepath> <opt: write/silent> <commands> # fits the data that filepath leads to
-./fit --help # lists all commands that can be used to fit the data
-./fit --info # explains the nomenclature of the fitting coefficients
+./fit <filepath> <opt: write/silent> <commands> # fits the data that <filepath> leads to
+./fit --help    # lists all commands that can be used to fit the data
+./fit --info    # explains the nomenclature of the fitting coefficients
 ```
 
 If console-logging should be disabled or the results exported to file, instructions must be given after the filepath.
 
 ```bash
---write         # will write/export the results to a .txt file in the "result" folder
---write = csv   # will write/export the results to a .csv file
+--write         # will write/export the results to a .txt file in the "results" folder
+--write=csv     # will write/export the results to a .csv file
  -s             # disables console logging
 ```
 
-Fitting commands can be chained
+Fitting commands can be chained, e.g.
 
 ```bash
---lin --log --pol 2 --pol 4:6 # will fit linear, logarithmic and polynomial curves of degree 2 and degrees 4 to 6 and return/write the results
+--lin --log --pol 2 --pol 4:6 # will fit linear, logarithmic and polynomial curves of degree 2 and degrees 4 to 6
 ```
 
 ## Limits and Outlook
@@ -44,4 +44,4 @@ Fitting commands can be chained
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Contact
-If you have questions or find an error, please contact yiguang.tt.wang@gmail.com
+If you have questions or find errors in the code, please contact yiguang.tt.wang@gmail.com
