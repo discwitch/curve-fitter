@@ -292,6 +292,7 @@ int main(int argc, char **argv)
                 break;
         }
     }
+    printf("\n");
     return 0;
 }
 
