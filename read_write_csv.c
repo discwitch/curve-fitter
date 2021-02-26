@@ -83,25 +83,25 @@ void write_lin(char *filepath, lin_coefficients coefficients, error_t errors, in
         if (write_to_csv) {
             fprintf(fp, "linear;%0.6lf;%0.6lf;%0.6lf;%0.6lf;d = %lf;k = %lf\n", errors.std_error, errors.r_squared, errors.sse, errors.mse, coefficients.d, coefficients.k);
         } else {
-            fprintf(fp, "linear\t\t");
-            fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
-            fprintf(fp, "    d = %lf, k = %lf\n", coefficients.d, coefficients.k);
+            fprintf(fp, "%-20s", "linear");
+            fprintf(fp, "%-25.6lf%-25.6lf%-25.6lf%-25.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+            fprintf(fp, "%-sd = %lf, k = %lf\n", "", coefficients.d, coefficients.k);
         }
     } else if (mode == 1){
         if (write_to_csv) {
             fprintf(fp, "exponential;%0.6lf;%0.6lf;%0.6lf;%0.6lf;A = %lf;k = %lf\n", errors.std_error, errors.r_squared, errors.sse, errors.mse, coefficients.d, coefficients.k);
         } else {
-            fprintf(fp, "exponential\t");
-            fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
-            fprintf(fp, "    A = %lf, k = %lf\n", coefficients.d, coefficients.k);
+            fprintf(fp, "%-20s", "exponential");
+            fprintf(fp, "%-25.6lf%-25.6lf%-25.6lf%-25.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+            fprintf(fp, "%-sA = %lf, k = %lf\n", "", coefficients.d, coefficients.k);
         }
     } else if (mode == 2){
         if (write_to_csv) {
             fprintf(fp, "logarithmic;%0.6lf;%0.6lf;%0.6lf;%0.6lf;d = %lf;k = %lf\n", errors.std_error, errors.r_squared, errors.sse, errors.mse, coefficients.d, coefficients.k);
         } else {
-            fprintf(fp, "logarithmic\t");
-            fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
-            fprintf(fp, "    d = %lf, k = %lf\n", coefficients.d, coefficients.k);
+            fprintf(fp, "%-20s", "logarithmic");
+            fprintf(fp, "%-25.6lf%-25.6lf%-25.6lf%-25.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+            fprintf(fp, "%-sd = %lf, k = %lf\n", "", coefficients.d, coefficients.k);
         }       
     }
     fclose(fp);
@@ -126,9 +126,9 @@ void write_poly(char *filepath, double *coefficients, error_t errors, int degree
 	    }
         fprintf(fp, "\n");
     } else {
-        fprintf(fp, "polynomial: %i\t", degree);
-        fprintf(fp, "       %0.6lf       %0.6lf\t   %0.6lf    %0.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
-        fprintf(fp, "    ");
+        fprintf(fp, "%-12s%-8i", "polynomial: ", degree);
+        fprintf(fp, "%-25.6lf%-25.6lf%-25.6lf%-25.6lf", errors.std_error, errors.r_squared, errors.sse, errors.mse);
+        fprintf(fp, "%-s", "");
         for(int i=0; i<degree+1; i++)
         {
             fprintf(fp, "a[%d] = %lf", i, coefficients[i]);

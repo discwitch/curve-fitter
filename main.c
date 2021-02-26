@@ -130,9 +130,8 @@ int main(int argc, char **argv)
                         if (export_to_csv) {
                             fprintf(fp, "Fit;Std_Error;R2;SSE;MSE;Coefficients\n");
                         } else {
-                            fprintf(fp, "Fit \t\t |     Std. Error    | \t R2 \t | \t SSE \t | \t MSE \t | \t Coefficients \n");
-                            fprintf(fp, "–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n");
-                            fprintf(fp, "\n");
+                            fprintf(fp, "%-20s%-25s%-25s%-25s%-25s%-s\n", "Fit", "Std. Error", "R2", "SSE", "MSE", "Coefficients");
+                            fprintf(fp, "––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n");
                         }
                         fclose(fp);
 
