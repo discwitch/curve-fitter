@@ -14,6 +14,8 @@ make
 ```
 ## Usage
 
+The input-files can be stored in the "data" folder, but can also be read from anywhere.
+
 ```bash
 ./fit <filepath> <opt: write/silent> <commands> # fits the data that <filepath> leads to
 ./fit --help    # lists all commands that can be used to fit the data
