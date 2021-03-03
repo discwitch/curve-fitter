@@ -74,7 +74,7 @@ int main(int argc, char **argv)
                 printf("\n");
                 printf("usage: ./fit [--version] [--help] [--info] [<file-path> <write/silent> <commands>]\n");
                 printf("\n");
-                printf("Regression Standard Error, R2, Sum of Squared Errors (SSE)\n");
+                printf("Root Mean Squared Error, R2, Sum of Squared Estimate of Errors (SSE)\n");
                 printf("and Mean Squared Error (MSE) are returned for all fits.\n");
                 printf("\n");
                 printf("Write/Export and Silent tags must be set after <file-path> \n");
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
                         FILE *fp;
                         fp = fopen(export_path, "w");
                         if (export_to_csv) {
-                            fprintf(fp, "Fit;Std_Error;R2;SSE;MSE;Coefficients\n");
+                            fprintf(fp, "Fit;RMSE;R2;SSE;MSE;Coefficients\n");
                         } else {
                             fprintf(fp, "%-20s%-25s%-25s%-25s%-25s%-s\n", "Fit", "Std. Error", "R2", "SSE", "MSE", "Coefficients");
                             fprintf(fp, "––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––\n");

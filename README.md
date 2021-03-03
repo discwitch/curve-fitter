@@ -1,7 +1,7 @@
 # curve-fitter
 
 curve-fitter is a small c-program that can fit datapoints in a two-column .csv file.
-It can fit linear, exponential, logarithmic and polynomial curves and returns standard error, R2, sum-of-squared-errors (SSE) and mean-squared-error (MSE) for each fit.
+It can fit linear, exponential, logarithmic and polynomial curves and returns the root-mean-squared-error, R2, sum-of-squared-estimate-of-errors (SSE) and mean-squared-error (MSE) for each fit.
 The result can be exported to a .txt or .csv file.
 
 ## Version 1.0.0
